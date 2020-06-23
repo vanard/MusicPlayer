@@ -24,7 +24,7 @@ class SongsFragment : Fragment() {
         val view: View = inflater.inflate(R.layout.fragment_songs, container, false)
         val rvMusic: RecyclerView = view.findViewById(R.id.rvMusic)
 
-        musicAdapter = MusicAdapter(MainActivity.musicFile)
+        musicAdapter = MusicAdapter(MainActivity.musicFile, requireContext())
 
         rvMusic.apply {
             layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
