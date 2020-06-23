@@ -1,4 +1,4 @@
-package com.vanard.learnmusicplayer.ui.main
+package com.vanard.learnmusicplayer.ui.placeholder
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -29,7 +29,7 @@ class PlaceholderFragment : Fragment() {
             savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_main, container, false)
-        val textView: TextView = root.findViewById(R.id.section_label)
+        val textView: TextView = root.findViewById(R.id.sectionLabel)
         pageViewModel.text.observe(this, Observer<String> {
             textView.text = it
         })
@@ -49,7 +49,8 @@ class PlaceholderFragment : Fragment() {
          */
         @JvmStatic
         fun newInstance(sectionNumber: Int): PlaceholderFragment {
-            return PlaceholderFragment().apply {
+            return PlaceholderFragment()
+                .apply {
                 arguments = Bundle().apply {
                     putInt(ARG_SECTION_NUMBER, sectionNumber)
                 }

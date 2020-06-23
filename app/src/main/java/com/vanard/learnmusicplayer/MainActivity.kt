@@ -1,19 +1,25 @@
 package com.vanard.learnmusicplayer
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
+import android.database.Cursor
+import android.net.Uri
 import android.os.Bundle
-import android.widget.Toast
+import android.provider.MediaStore
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.tabs.TabLayoutMediator.TabConfigurationStrategy
+import com.vanard.learnmusicplayer.model.MusicFile
 import com.vanard.learnmusicplayer.ui.main.AlbumsFragment
 import com.vanard.learnmusicplayer.ui.main.SongsFragment
 import com.vanard.learnmusicplayer.ui.main.ViewPagerAdapter
 import kotlinx.android.synthetic.main.activity_main.*
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,6 +29,12 @@ class MainActivity : AppCompatActivity() {
     )
 
     private val WRITE_REQUEST_CODE = 101
+
+    companion object {
+        var musicFile : ArrayList<MusicFile> = arrayListOf()
+    }
+
+//    lateinit var musicFile : ArrayList<MusicFile>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,8 +75,7 @@ class MainActivity : AppCompatActivity() {
         if (permission != PackageManager.PERMISSION_GRANTED) {
             makeRequest()
         } else {
-            Toast.makeText(this, "Permission Granted!", Toast.LENGTH_SHORT).show()
-
+            musicFile = getAllAudio(this)
         }
     }
 
@@ -85,13 +96,46 @@ class MainActivity : AppCompatActivity() {
             WRITE_REQUEST_CODE -> {
 
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    musicFile = getAllAudio(this)
 
-                    Toast.makeText(this, "Permission Granted!", Toast.LENGTH_SHORT).show()
                 } else {
                     makeRequest()
                 }
 
             }
         }
+    }
+
+    fun getAllAudio(context: Context): ArrayList<MusicFile> {
+        val tempAudioList: ArrayList<MusicFile> = ArrayList()
+        val uri: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+        val projection = arrayOf(
+            MediaStore.Audio.Media.ALBUM,
+            MediaStore.Audio.Media.TITLE,
+            MediaStore.Audio.Media.DURATION,
+            MediaStore.Audio.Media.DATA,
+            MediaStore.Audio.Media.ARTIST
+        )
+        val cursor: Cursor? = context.contentResolver.query(uri, projection, null, null, null)
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                val album = cursor.getString(0)
+                val title = cursor.getString(1)
+                val duration = cursor.getString(2)
+                val path = cursor.getString(3)
+                val artist = cursor.getString(4)
+
+                val musicFile = MusicFile(path, title, artist, album, duration)
+
+                //check
+                Log.i("path: $path", "album: $album")
+
+                tempAudioList.add(musicFile)
+            }
+
+            cursor.close()
+        }
+
+        return tempAudioList
     }
 }
