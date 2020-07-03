@@ -1,6 +1,7 @@
 package com.vanard.learnmusicplayer
 
 import android.content.Context
+import android.content.Intent
 import android.media.MediaMetadataRetriever
 import android.view.LayoutInflater
 import android.view.View
@@ -36,6 +37,13 @@ class MusicAdapter (private val mFiles: ArrayList<MusicFile>, private val contex
             Glide.with(context).asBitmap()
                 .load(R.drawable.ic_launcher_background)
                 .into(holder.albumArt)
+        }
+
+        holder.itemView.setOnClickListener {
+            context.startActivity(
+                Intent(context, PlayerActivity::class.java)
+                    .putExtra("pos", position)
+            )
         }
 
     }

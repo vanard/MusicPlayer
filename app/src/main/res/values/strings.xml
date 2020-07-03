@@ -4,4 +4,5 @@
     <string name="tab_text_2">Albums</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="now_playing_text">Now Playing</string>
 </resources>
