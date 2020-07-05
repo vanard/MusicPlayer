@@ -49,17 +49,18 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/albumArtPlay"
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="320dp"
         android:layout_below="@id/layoutTop"
+        android:scaleType="centerInside"
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
     <TextView
         android:id="@+id/songName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/imageView3"
+        android:layout_below="@id/albumArtPlay"
         android:layout_margin="16dp"
         android:ellipsize="end"
         android:gravity="center_horizontal"

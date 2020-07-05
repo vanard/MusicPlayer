@@ -6,33 +6,38 @@
     android:layout_height="wrap_content"
     android:background="#111">
 
-    <ImageView
-        android:id="@+id/musicImg"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:padding="4dp"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/layoutImg"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_margin="12dp"
+        app:cardCornerRadius="5dp"
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_launcher_background" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/musicImg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_music_note" />
+
+    </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/musicFileName"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:gravity="center|start"
         android:text="TextView"
         android:textColor="@color/colorAccent"
-        app:layout_constraintBottom_toBottomOf="@+id/musicImg"
+        app:layout_constraintBottom_toBottomOf="@+id/layoutImg"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/musicImg"
-        app:layout_constraintTop_toTopOf="@+id/musicImg" />
+        app:layout_constraintStart_toEndOf="@+id/layoutImg"
+        app:layout_constraintTop_toTopOf="@+id/layoutImg" />
 
-    <View
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:background="#40ffffff"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

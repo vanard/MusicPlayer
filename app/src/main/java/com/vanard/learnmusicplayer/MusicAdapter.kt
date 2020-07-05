@@ -33,9 +33,10 @@ class MusicAdapter (private val mFiles: ArrayList<MusicFile>, private val contex
         val img : ByteArray? = getAlbumArt(mFile.path)
         if (img != null) {
             Glide.with(context).asBitmap().load(img).into(holder.albumArt)
+
         } else {
             Glide.with(context).asBitmap()
-                .load(R.drawable.ic_launcher_background)
+                .load(R.drawable.ic_music_note)
                 .into(holder.albumArt)
         }
 
