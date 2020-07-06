@@ -34,8 +34,6 @@ class MainActivity : AppCompatActivity() {
         var musicFile : ArrayList<MusicFile> = arrayListOf()
     }
 
-//    lateinit var musicFile : ArrayList<MusicFile>
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -46,6 +44,11 @@ class MainActivity : AppCompatActivity() {
 
         permission()
         setupViewPager()
+    }
+
+    override fun onResume() {
+//        permission()
+        super.onResume()
     }
 
     private fun setupViewPager() {
@@ -138,4 +141,5 @@ class MainActivity : AppCompatActivity() {
 
         return tempAudioList
     }
+
 }

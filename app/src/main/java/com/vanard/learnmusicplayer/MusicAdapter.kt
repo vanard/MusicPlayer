@@ -29,6 +29,7 @@ class MusicAdapter (private val mFiles: ArrayList<MusicFile>, private val contex
     override fun onBindViewHolder(holder: MusicHolder, position: Int) {
         val mFile: MusicFile = mFiles[position]
         holder.title.text = mFile.title
+        holder.artist.text = mFile.artist
 
         val img : ByteArray? = getAlbumArt(mFile.path)
         if (img != null) {
@@ -52,6 +53,7 @@ class MusicAdapter (private val mFiles: ArrayList<MusicFile>, private val contex
     class MusicHolder(item: View) : RecyclerView.ViewHolder(item) {
         val albumArt : ImageView = item.findViewById(R.id.musicImg)
         val title : TextView = item.findViewById(R.id.musicFileName)
+        val artist : TextView = item.findViewById(R.id.musicArtistName)
     }
 
     private fun getAlbumArt(uri: String?): ByteArray? {

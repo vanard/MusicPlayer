@@ -11,8 +11,8 @@
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_margin="12dp"
-        app:cardCornerRadius="5dp"
         app:cardBackgroundColor="@color/colorPrimary"
+        app:cardCornerRadius="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -30,14 +30,32 @@
     <TextView
         android:id="@+id/musicFileName"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:gravity="center|start"
+        android:singleLine="true"
         android:text="TextView"
         android:textColor="@color/colorAccent"
-        app:layout_constraintBottom_toBottomOf="@+id/layoutImg"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/musicArtistName"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/layoutImg"
         app:layout_constraintTop_toTopOf="@+id/layoutImg" />
+
+    <TextView
+        android:id="@+id/musicArtistName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:singleLine="true"
+        android:text="TextView"
+        android:textColor="?android:attr/colorBackground"
+        app:layout_constraintBottom_toBottomOf="@+id/layoutImg"
+        app:layout_constraintEnd_toEndOf="@+id/musicFileName"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/musicFileName"
+        app:layout_constraintTop_toBottomOf="@+id/musicFileName" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

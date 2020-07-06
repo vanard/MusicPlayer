@@ -35,4 +35,9 @@ class SongsFragment : Fragment() {
         return view
     }
 
+    override fun onResume() {
+//        musicAdapter.notifyDataSetChanged()
+        super.onResume()
+    }
+
 }
