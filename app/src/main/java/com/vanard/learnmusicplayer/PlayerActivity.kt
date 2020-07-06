@@ -16,6 +16,8 @@ import kotlinx.android.synthetic.main.activity_player.*
 
 class PlayerActivity : AppCompatActivity() {
 
+    private val TAG = "PlayerActivity"
+    
     private var pos = -1
     private var musicHandler = Handler()
     private lateinit var playThread : Thread
@@ -59,7 +61,6 @@ class PlayerActivity : AppCompatActivity() {
                 }
                 musicHandler.postDelayed(this, 1000)
             }
-
         })
 
     }
@@ -72,11 +73,27 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun prevThreadBtn() {
-        TODO("Not yet implemented")
+        prevThread = object : Thread() {
+            override fun run() {
+                super.run()
+                prevBtn.setOnClickListener {
+                    prevBtnClicked()
+                }
+            }
+        }
+        prevThread.start()
     }
 
     private fun nextThreadBtn() {
-        TODO("Not yet implemented")
+        nextThread = object : Thread() {
+            override fun run() {
+                super.run()
+                nextBtn.setOnClickListener {
+                    nextBtnClicked()
+                }
+            }
+        }
+        nextThread.start()
     }
 
     private fun playThreadBtn() {
@@ -91,8 +108,81 @@ class PlayerActivity : AppCompatActivity() {
         playThread.start()
     }
 
+    private fun prevBtnClicked() {
+        if (mediaPlayer == null) return
+
+        if (mediaPlayer!!.isPlaying) {
+            preparePrevSong()
+            playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
+            mediaPlayer!!.start()
+        } else {
+            preparePrevSong()
+            playPauseBtn.setImageResource(R.drawable.ic_baseline_play_arrow_24)
+        }
+    }
+
+    private fun nextBtnClicked() {
+        if (mediaPlayer == null) return
+
+        if (mediaPlayer!!.isPlaying) {
+            prepareNextSong()
+            playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
+            mediaPlayer!!.start()
+        } else {
+            prepareNextSong()
+            playPauseBtn.setImageResource(R.drawable.ic_baseline_play_arrow_24)
+        }
+    }
+
     private fun playPauseBtnClicked() {
-        TODO("Not yet implemented")
+//        Log.d(TAG, "playPauseBtnClicked: true")
+        if (mediaPlayer == null) return
+
+        if (mediaPlayer!!.isPlaying) {
+            playPauseBtn.setImageResource(R.drawable.ic_baseline_play_arrow_24)
+            mediaPlayer!!.pause()
+//            seekBar.max = mediaPlayer!!.duration / 1000
+//            runOnUiThread(object : Runnable {
+//                override fun run() {
+//
+//                    val mCurrentPos = mediaPlayer!!.currentPosition / 1000
+//                    seekBar.progress = mCurrentPos
+//
+//                    musicHandler.postDelayed(this, 1000)
+//                }
+//            })
+        } else {
+            playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
+            mediaPlayer!!.start()
+        }
+    }
+
+    private fun preparePrevSong() {
+        stopMp()
+        pos = if (pos - 1 < 0) listSongs!!.size - 1 else pos - 1
+        uri = Uri.parse(listSongs!![pos].path)
+        mediaPlayer = MediaPlayer.create(applicationContext, uri)
+        metadataR(uri)
+        songName.text = listSongs!![pos].title
+        artistName.text = listSongs!![pos].artist
+        seekBar.max = mediaPlayer!!.duration / 1000
+    }
+
+    private fun prepareNextSong() {
+        stopMp()
+        pos = (pos + 1) % listSongs!!.size
+        uri = Uri.parse(listSongs!![pos].path)
+        mediaPlayer = MediaPlayer.create(applicationContext, uri)
+        metadataR(uri)
+        songName.text = listSongs!![pos].title
+        artistName.text = listSongs!![pos].artist
+        seekBar.max = mediaPlayer!!.duration / 1000
+    }
+
+    private fun stopMp() {
+        mediaPlayer!!.stop()
+        mediaPlayer!!.reset()
+        mediaPlayer!!.release()
     }
 
     private fun formattedTime(mCurrentPos : Int) : String {
@@ -123,8 +213,7 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         if (mediaPlayer != null) {
-            mediaPlayer!!.stop()
-            mediaPlayer!!.release()
+            stopMp()
             mediaPlayer = MediaPlayer.create(applicationContext, uri)
             mediaPlayer!!.start()
         } else {
