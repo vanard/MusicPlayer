@@ -16,8 +16,13 @@ import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.vanard.learnmusicplayer.MainActivity.Companion.musicFile
+import com.vanard.learnmusicplayer.MainActivity.Companion.repeatBoolean
+import com.vanard.learnmusicplayer.MainActivity.Companion.repeatOneBoolean
+import com.vanard.learnmusicplayer.MainActivity.Companion.shuffleBoolean
 import com.vanard.learnmusicplayer.model.MusicFile
 import kotlinx.android.synthetic.main.activity_player.*
+import java.util.*
 
 
 class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
@@ -40,7 +45,22 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
         getIntentData()
+        setupView()
 
+        runOnUiThread(object : Runnable {
+            override fun run() {
+                if (mediaPlayer != null) {
+                    val mCurrentPos = mediaPlayer!!.currentPosition / 1000
+                    seekBar.progress = mCurrentPos
+                    durationPlayed.text = formattedTime(mCurrentPos)
+                }
+                musicHandler.postDelayed(this, 1000)
+            }
+        })
+
+    }
+
+    private fun setupView() {
         seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (mediaPlayer != null && fromUser) {
@@ -57,18 +77,29 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
             }
 
         })
-
-        runOnUiThread(object : Runnable {
-            override fun run() {
-                if (mediaPlayer != null) {
-                    val mCurrentPos = mediaPlayer!!.currentPosition / 1000
-                    seekBar.progress = mCurrentPos
-                    durationPlayed.text = formattedTime(mCurrentPos)
-                }
-                musicHandler.postDelayed(this, 1000)
+        shuffleBtn.setOnClickListener {
+            if (shuffleBoolean) {
+                shuffleBoolean = false
+                shuffleBtn.setImageResource(R.drawable.ic_baseline_shuffle_24)
+            } else {
+                shuffleBoolean = true
+                shuffleBtn.setImageResource(R.drawable.ic_baseline_shuffle_on_24)
             }
-        })
-
+        }
+        repeatBtn.setOnClickListener {
+            if (repeatBoolean && repeatOneBoolean) {
+                repeatBoolean = false
+                repeatOneBoolean = false
+                repeatBtn.setImageResource(R.drawable.ic_baseline_repeat_24)
+            } else if (repeatBoolean && !repeatOneBoolean) {
+                repeatOneBoolean = true
+                repeatBtn.setImageResource(R.drawable.ic_baseline_repeat_on_one_24)
+            }
+            else {
+                repeatBoolean = true
+                repeatBtn.setImageResource(R.drawable.ic_baseline_repeat_on_24)
+            }
+        }
     }
 
     override fun onResume() {
@@ -165,7 +196,12 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
 
     private fun preparePrevSong() {
         stopMp()
-        pos = if (pos - 1 < 0) listSongs!!.size - 1 else pos - 1
+//        if (!repeatBoolean) listSongs!!.removeAt(pos)
+        if (shuffleBoolean && !repeatBoolean) {
+            pos = getRandom(listSongs!!.size - 1)
+        } else if (!shuffleBoolean && !repeatBoolean) {
+            pos = if (pos - 1 < 0) listSongs!!.size - 1 else pos - 1
+        }
         uri = Uri.parse(listSongs!![pos].path) // fromFile
         mediaPlayer = MediaPlayer.create(applicationContext, uri)
         metadataR(uri, 2)
@@ -177,7 +213,13 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
 
     private fun prepareNextSong() {
         stopMp()
-        pos = (pos + 1) % listSongs!!.size
+//        if (!repeatBoolean ) listSongs!!.removeAt(pos)
+        if (shuffleBoolean && !repeatBoolean) {
+            pos = getRandom(listSongs!!.size - 1)
+        } else if (!shuffleBoolean && !repeatBoolean) {
+            pos = (pos + 1) % listSongs!!.size
+        }
+        // else
         uri = Uri.parse(listSongs!![pos].path) // fromFile
         mediaPlayer = MediaPlayer.create(applicationContext, uri)
         metadataR(uri, 1)
@@ -185,6 +227,11 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
         artistName.text = listSongs!![pos].artist
         seekBar.max = mediaPlayer!!.duration / 1000
         mediaPlayer!!.setOnCompletionListener(this)
+    }
+
+    private fun getRandom(i: Int): Int {
+        val random = Random()
+        return random.nextInt(i + 1)
     }
 
     private fun stopMp() {
@@ -207,7 +254,7 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
 
     private fun getIntentData() {
         pos = intent.getIntExtra("pos", -1)
-        listSongs = MainActivity.musicFile
+        listSongs = musicFile
 
         if (listSongs != null) {
             playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)

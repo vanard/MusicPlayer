@@ -32,6 +32,9 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         var musicFile : ArrayList<MusicFile> = arrayListOf()
+        var shuffleBoolean = false
+        var repeatBoolean = false
+        var repeatOneBoolean = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -117,7 +120,8 @@ class MainActivity : AppCompatActivity() {
             MediaStore.Audio.Media.TITLE,
             MediaStore.Audio.Media.DURATION,
             MediaStore.Audio.Media.DATA,
-            MediaStore.Audio.Media.ARTIST
+            MediaStore.Audio.Media.ARTIST,
+            MediaStore.Audio.Media._ID
         )
         val cursor: Cursor? = context.contentResolver.query(uri, projection, null, null, null)
         if (cursor != null) {
@@ -127,8 +131,9 @@ class MainActivity : AppCompatActivity() {
                 val duration = cursor.getString(2)
                 val path = cursor.getString(3)
                 val artist = cursor.getString(4)
+                val id = cursor.getString(5)
 
-                val musicFile = MusicFile(path, title, artist, album, duration)
+                val musicFile = MusicFile(path, title, artist, album, duration, id)
 
                 //check
                 Log.i("path: $path", "album: $album")
