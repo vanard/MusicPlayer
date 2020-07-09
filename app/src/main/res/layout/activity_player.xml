@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     android:orientation="vertical"
-    tools:context=".PlayerActivity">
+    tools:context=".ui.detail.PlayerActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutTop"
@@ -15,7 +15,7 @@
         android:layout_alignParentTop="true">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/backBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -32,10 +32,10 @@
             android:textColor="@color/colorAccent"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView"
+            app:layout_constraintBottom_toBottomOf="@+id/backBtn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/imageView" />
+            app:layout_constraintTop_toTopOf="@+id/backBtn" />
 
         <ImageView
             android:id="@+id/imageView2"
@@ -53,7 +53,8 @@
         android:layout_width="match_parent"
         android:layout_height="320dp"
         android:layout_below="@id/layoutTop"
-        android:scaleType="centerInside"
+        android:layout_marginTop="8dp"
+        android:scaleType="fitCenter"
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
     <TextView

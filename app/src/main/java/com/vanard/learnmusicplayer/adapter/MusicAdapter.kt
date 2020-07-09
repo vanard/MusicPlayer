@@ -1,4 +1,4 @@
-package com.vanard.learnmusicplayer
+package com.vanard.learnmusicplayer.adapter
 
 import android.content.ContentUris
 import android.content.Context
@@ -14,7 +14,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
+import com.vanard.learnmusicplayer.R
 import com.vanard.learnmusicplayer.model.MusicFile
+import com.vanard.learnmusicplayer.ui.detail.PlayerActivity
 import java.io.File
 
 
@@ -23,7 +25,6 @@ class MusicAdapter (private val mFiles: ArrayList<MusicFile>, private val contex
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MusicHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.music_items, parent, false)
-
         return MusicHolder(view)
     }
 
@@ -91,12 +92,14 @@ class MusicAdapter (private val mFiles: ArrayList<MusicFile>, private val contex
         val menuMore : ImageView = item.findViewById(R.id.menuMore)
     }
 
-    private fun getAlbumArt(uri: String?): ByteArray? {
-        val retriever = MediaMetadataRetriever()
-        retriever.setDataSource(uri)
-        val art = retriever.embeddedPicture
-        retriever.release()
-        return art
+    companion object {
+        fun getAlbumArt(uri: String?): ByteArray? {
+            val retriever = MediaMetadataRetriever()
+            retriever.setDataSource(uri)
+            val art = retriever.embeddedPicture
+            retriever.release()
+            return art
+        }
     }
 
 }

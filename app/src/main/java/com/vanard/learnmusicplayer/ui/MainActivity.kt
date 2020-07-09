@@ -1,4 +1,4 @@
-package com.vanard.learnmusicplayer
+package com.vanard.learnmusicplayer.ui
 
 import android.Manifest
 import android.content.Context
@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.tabs.TabLayoutMediator.TabConfigurationStrategy
+import com.vanard.learnmusicplayer.R
 import com.vanard.learnmusicplayer.model.MusicFile
 import com.vanard.learnmusicplayer.ui.main.AlbumsFragment
 import com.vanard.learnmusicplayer.ui.main.SongsFragment

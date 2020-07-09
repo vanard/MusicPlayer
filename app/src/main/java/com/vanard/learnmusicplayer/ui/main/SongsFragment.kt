@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.vanard.learnmusicplayer.MainActivity
-import com.vanard.learnmusicplayer.MusicAdapter
 import com.vanard.learnmusicplayer.R
+import com.vanard.learnmusicplayer.adapter.MusicAdapter
+import com.vanard.learnmusicplayer.ui.MainActivity
 
 class SongsFragment : Fragment() {
 
@@ -24,7 +24,10 @@ class SongsFragment : Fragment() {
         val view: View = inflater.inflate(R.layout.fragment_songs, container, false)
         val rvMusic: RecyclerView = view.findViewById(R.id.rvMusic)
 
-        musicAdapter = MusicAdapter(MainActivity.musicFile, requireContext())
+        musicAdapter = MusicAdapter(
+            MainActivity.musicFile,
+            requireContext()
+        )
 
         rvMusic.apply {
             layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)

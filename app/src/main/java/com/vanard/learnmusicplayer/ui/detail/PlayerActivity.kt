@@ -1,4 +1,4 @@
-package com.vanard.learnmusicplayer
+package com.vanard.learnmusicplayer.ui.detail
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -16,11 +16,12 @@ import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import com.vanard.learnmusicplayer.MainActivity.Companion.musicFile
-import com.vanard.learnmusicplayer.MainActivity.Companion.repeatBoolean
-import com.vanard.learnmusicplayer.MainActivity.Companion.repeatOneBoolean
-import com.vanard.learnmusicplayer.MainActivity.Companion.shuffleBoolean
+import com.vanard.learnmusicplayer.R
 import com.vanard.learnmusicplayer.model.MusicFile
+import com.vanard.learnmusicplayer.ui.MainActivity.Companion.musicFile
+import com.vanard.learnmusicplayer.ui.MainActivity.Companion.repeatBoolean
+import com.vanard.learnmusicplayer.ui.MainActivity.Companion.repeatOneBoolean
+import com.vanard.learnmusicplayer.ui.MainActivity.Companion.shuffleBoolean
 import kotlinx.android.synthetic.main.activity_player.*
 import java.util.*
 
@@ -61,6 +62,10 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
     }
 
     private fun setupView() {
+        backBtn.setOnClickListener {
+            onBackPressed()
+        }
+
         seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (mediaPlayer != null && fromUser) {
@@ -202,8 +207,11 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
         } else if (!shuffleBoolean && !repeatBoolean) {
             pos = if (pos - 1 < 0) listSongs!!.size - 1 else pos - 1
         }
-        uri = Uri.parse(listSongs!![pos].path) // fromFile
-        mediaPlayer = MediaPlayer.create(applicationContext, uri)
+        uri = Uri.parse(
+            listSongs!![pos].path) // fromFile
+        mediaPlayer = MediaPlayer.create(applicationContext,
+            uri
+        )
         metadataR(uri, 2)
         songName.text = listSongs!![pos].title
         artistName.text = listSongs!![pos].artist
@@ -220,8 +228,11 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
             pos = (pos + 1) % listSongs!!.size
         }
         // else
-        uri = Uri.parse(listSongs!![pos].path) // fromFile
-        mediaPlayer = MediaPlayer.create(applicationContext, uri)
+        uri = Uri.parse(
+            listSongs!![pos].path) // fromFile
+        mediaPlayer = MediaPlayer.create(applicationContext,
+            uri
+        )
         metadataR(uri, 1)
         songName.text = listSongs!![pos].title
         artistName.text = listSongs!![pos].artist
@@ -258,7 +269,8 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
 
         if (listSongs != null) {
             playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
-            uri = Uri.parse(listSongs!![pos].path) // fromFile
+            uri = Uri.parse(
+                listSongs!![pos].path) // fromFile
             songName.text = listSongs!![pos].title
             artistName.text = listSongs!![pos].artist
         } else {
@@ -269,10 +281,14 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
 
         if (mediaPlayer != null) {
             stopMp()
-            mediaPlayer = MediaPlayer.create(applicationContext, uri)
+            mediaPlayer = MediaPlayer.create(applicationContext,
+                uri
+            )
             mediaPlayer!!.start()
         } else {
-            mediaPlayer = MediaPlayer.create(applicationContext, uri)
+            mediaPlayer = MediaPlayer.create(applicationContext,
+                uri
+            )
             mediaPlayer!!.start()
         }
 
@@ -329,8 +345,12 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
     }
 
     fun imageNextAnimation(context: Context, imageView: ImageView, bitmap: Bitmap) {
-        val animOut = AnimationUtils.loadAnimation(context, R.anim.slide_out_left)
-        val animIn = AnimationUtils.loadAnimation(context, R.anim.slide_in_left)
+        val animOut = AnimationUtils.loadAnimation(context,
+            R.anim.slide_out_left
+        )
+        val animIn = AnimationUtils.loadAnimation(context,
+            R.anim.slide_in_left
+        )
         animOut.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationRepeat(animation: Animation?) {
                 //
@@ -350,8 +370,12 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
     }
 
     fun imagePrevAnimation(context: Context, imageView: ImageView, bitmap: Bitmap) {
-        val animOut = AnimationUtils.loadAnimation(context, R.anim.slide_out_right)
-        val animIn = AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
+        val animOut = AnimationUtils.loadAnimation(context,
+            R.anim.slide_out_right
+        )
+        val animIn = AnimationUtils.loadAnimation(context,
+            R.anim.slide_in_right
+        )
         animOut.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationRepeat(animation: Animation?) {
                 //
@@ -373,7 +397,9 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
     override fun onCompletion(mp: MediaPlayer?) {
         nextBtnClicked()
         if (mediaPlayer != null) {
-            mediaPlayer = MediaPlayer.create(applicationContext, uri)
+            mediaPlayer = MediaPlayer.create(applicationContext,
+                uri
+            )
             mediaPlayer!!.start()
             mediaPlayer!!.setOnCompletionListener(this)
         }
