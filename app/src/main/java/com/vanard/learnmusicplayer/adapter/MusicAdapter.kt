@@ -20,7 +20,9 @@ import com.vanard.learnmusicplayer.ui.detail.PlayerActivity
 import java.io.File
 
 
-class MusicAdapter (private val mFiles: ArrayList<MusicFile>, private val context: Context) :
+class MusicAdapter (private val mFiles: ArrayList<MusicFile>,
+                    private val context: Context,
+                    private val sender: String? = "") :
         RecyclerView.Adapter<MusicAdapter.MusicHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MusicHolder {
@@ -63,6 +65,7 @@ class MusicAdapter (private val mFiles: ArrayList<MusicFile>, private val contex
             context.startActivity(
                 Intent(context, PlayerActivity::class.java)
                     .putExtra("pos", position)
+                    .putExtra("sender", sender)
             )
         }
 

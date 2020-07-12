@@ -22,6 +22,7 @@ import com.vanard.learnmusicplayer.ui.MainActivity.Companion.musicFile
 import com.vanard.learnmusicplayer.ui.MainActivity.Companion.repeatBoolean
 import com.vanard.learnmusicplayer.ui.MainActivity.Companion.repeatOneBoolean
 import com.vanard.learnmusicplayer.ui.MainActivity.Companion.shuffleBoolean
+import com.vanard.learnmusicplayer.ui.detail.AlbumDetailActivity.Companion.albumSongs
 import kotlinx.android.synthetic.main.activity_player.*
 import java.util.*
 
@@ -265,7 +266,9 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
 
     private fun getIntentData() {
         pos = intent.getIntExtra("pos", -1)
-        listSongs = musicFile
+        val sender = intent.getStringExtra("sender")
+        listSongs = if (sender == "albumDetail") albumSongs
+            else musicFile
 
         if (listSongs != null) {
             playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)

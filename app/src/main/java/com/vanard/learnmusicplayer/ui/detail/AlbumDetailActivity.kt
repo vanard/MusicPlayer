@@ -15,9 +15,12 @@ import java.util.*
 class AlbumDetailActivity : AppCompatActivity() {
 
     private var albumName: String? = ""
-    private var albumSongs: ArrayList<MusicFile> = arrayListOf()
     private var count = 0
     private lateinit var musicAdapter: MusicAdapter
+
+    companion object {
+        var albumSongs: ArrayList<MusicFile> = arrayListOf()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +47,8 @@ class AlbumDetailActivity : AppCompatActivity() {
 
         musicAdapter = MusicAdapter(
             albumSongs,
-            this
+            this,
+            "albumDetail"
         )
 
         rvMusicAlbum.apply {
