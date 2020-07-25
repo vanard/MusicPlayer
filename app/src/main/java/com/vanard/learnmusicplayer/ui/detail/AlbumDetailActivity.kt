@@ -26,6 +26,7 @@ class AlbumDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_album_detail)
 
+        albumSongs.clear()
         albumName = intent.getStringExtra("albumName")
         for (i in 0 until musicFile.size) {
             if (albumName == musicFile[i].album) {

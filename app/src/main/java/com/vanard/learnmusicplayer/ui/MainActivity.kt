@@ -113,7 +113,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun getAllAudio(context: Context): ArrayList<MusicFile> {
+    private fun getAllAudio(context: Context): ArrayList<MusicFile> {
         val tempAudioList: ArrayList<MusicFile> = ArrayList()
         val uri: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         val projection = arrayOf(
