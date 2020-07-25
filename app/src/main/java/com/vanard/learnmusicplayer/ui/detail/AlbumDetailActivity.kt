@@ -47,7 +47,6 @@ class AlbumDetailActivity : AppCompatActivity() {
 
         musicAdapter = MusicAdapter(
             albumSongs,
-            this,
             "albumDetail"
         )
 

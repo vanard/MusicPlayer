@@ -8,49 +8,55 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.PopupMenu
-import android.widget.TextView
+import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.vanard.learnmusicplayer.R
 import com.vanard.learnmusicplayer.model.MusicFile
+import com.vanard.learnmusicplayer.ui.MainActivity.Companion.musicFile
 import com.vanard.learnmusicplayer.ui.detail.PlayerActivity
 import java.io.File
 
 
 class MusicAdapter (private val mFiles: ArrayList<MusicFile>,
-                    private val context: Context,
                     private val sender: String? = "") :
-        RecyclerView.Adapter<MusicAdapter.MusicHolder>() {
+        RecyclerView.Adapter<MusicAdapter.MusicHolder>(), Filterable {
+
+    private var mSongs = arrayListOf<MusicFile>()
+    private lateinit var mContext: Context
+
+    init {
+        mSongs = mFiles
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MusicHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.music_items, parent, false)
+        mContext = parent.context
         return MusicHolder(view)
     }
 
     override fun getItemCount(): Int {
-        return mFiles.size
+        return mSongs.size
     }
 
     override fun onBindViewHolder(holder: MusicHolder, position: Int) {
-        val mFile: MusicFile = mFiles[position]
+        val mFile: MusicFile = mSongs[position]
         holder.title.text = mFile.title
         holder.artist.text = mFile.artist
 
         val img : ByteArray? = getAlbumArt(mFile.path)
         if (img != null) {
-            Glide.with(context).asBitmap().load(img).into(holder.albumArt)
+            Glide.with(mContext).asBitmap().load(img).into(holder.albumArt)
 
         } else {
-            Glide.with(context).asBitmap()
+            Glide.with(mContext).asBitmap()
                 .load(R.drawable.ic_music_note)
                 .into(holder.albumArt)
         }
 
         holder.menuMore.setOnClickListener {v ->
-            val popupMenu = PopupMenu(context, v)
+            val popupMenu = PopupMenu(mContext, v)
             popupMenu.menuInflater.inflate(R.menu.pop_music_file, popupMenu.menu)
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
@@ -62,8 +68,8 @@ class MusicAdapter (private val mFiles: ArrayList<MusicFile>,
         }
 
         holder.itemView.setOnClickListener {
-            context.startActivity(
-                Intent(context, PlayerActivity::class.java)
+            mContext.startActivity(
+                Intent(mContext, PlayerActivity::class.java)
                     .putExtra("pos", position)
                     .putExtra("sender", sender)
             )
@@ -73,14 +79,14 @@ class MusicAdapter (private val mFiles: ArrayList<MusicFile>,
 
     private fun deleteFile(position: Int, v: View): Boolean {
         val contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-            mFiles[position].id!!.toLong())
-        val file = File(mFiles[position].path)
+            mSongs[position].id!!.toLong())
+        val file = File(mSongs[position].path)
         val deleted = file.delete()
         if (deleted) {
-            context.contentResolver.delete(contentUri, null, null)
-            mFiles.removeAt(position)
+            mContext.contentResolver.delete(contentUri, null, null)
+            mSongs.removeAt(position)
             notifyItemRemoved(position)
-            Snackbar.make(v, "File deleted : ${mFiles[position].title}", Snackbar.LENGTH_LONG).show()
+            Snackbar.make(v, "File deleted : ${mSongs[position].title}", Snackbar.LENGTH_LONG).show()
         }else {
             Snackbar.make(v, "File can't be deleted : ", Snackbar.LENGTH_LONG).show()
         }
@@ -93,6 +99,7 @@ class MusicAdapter (private val mFiles: ArrayList<MusicFile>,
         val title : TextView = item.findViewById(R.id.musicFileName)
         val artist : TextView = item.findViewById(R.id.musicArtistName)
         val menuMore : ImageView = item.findViewById(R.id.menuMore)
+
     }
 
     companion object {
@@ -103,6 +110,36 @@ class MusicAdapter (private val mFiles: ArrayList<MusicFile>,
             retriever.release()
             return art
         }
+    }
+
+    override fun getFilter(): Filter = fileFilter()
+
+    private fun fileFilter() : Filter = object : Filter() {
+        override fun performFiltering(constraint: CharSequence?): FilterResults {
+            val filterPattern = constraint.toString().toLowerCase().trim()
+            mSongs = if (constraint == null || constraint.isEmpty()) {
+                mFiles
+            } else {
+                val filteredFile = arrayListOf<MusicFile>()
+                for (item in mFiles) {
+                    if (item.title!!.toLowerCase().contains(filterPattern))
+                        filteredFile.add(item)
+                }
+                filteredFile
+            }
+
+            val res = FilterResults()
+            res.values = mSongs
+            return res
+        }
+
+        @Suppress("UNCHECKED_CAST")
+        override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+            musicFile = mSongs
+            mSongs = results?.values as ArrayList<MusicFile>
+            notifyDataSetChanged()
+        }
+
     }
 
 }

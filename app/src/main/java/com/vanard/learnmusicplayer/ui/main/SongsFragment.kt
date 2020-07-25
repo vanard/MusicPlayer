@@ -1,15 +1,14 @@
 package com.vanard.learnmusicplayer.ui.main
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.vanard.learnmusicplayer.R
 import com.vanard.learnmusicplayer.adapter.MusicAdapter
-import com.vanard.learnmusicplayer.ui.MainActivity
+import com.vanard.learnmusicplayer.ui.MainActivity.Companion.musicFile
 
 class SongsFragment : Fragment() {
 
@@ -24,9 +23,10 @@ class SongsFragment : Fragment() {
         val view: View = inflater.inflate(R.layout.fragment_songs, container, false)
         val rvMusic: RecyclerView = view.findViewById(R.id.rvMusic)
 
+        setHasOptionsMenu(true)
+
         musicAdapter = MusicAdapter(
-            MainActivity.musicFile,
-            requireContext()
+            musicFile
         )
 
         rvMusic.apply {
@@ -41,6 +41,27 @@ class SongsFragment : Fragment() {
     override fun onResume() {
 //        musicAdapter.notifyDataSetChanged()
         super.onResume()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.search, menu)
+        val searchAction = menu.findItem(R.id.action_search)
+        val searchView = SearchView(context)
+        searchView.queryHint = "Search..."
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                musicAdapter.filter.filter(newText)
+                return true
+            }
+
+        })
+        
+        searchAction.actionView = searchView
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
 }
