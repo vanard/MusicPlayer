@@ -12,7 +12,7 @@ Reference from: [Programmity](https://www.youtube.com/c/Programmity/videos)
 - [Material Components for Android](https://github.com/material-components/material-components-android)
 
 ### Feature
-1. List songs
+1. List / Sort songs
 2. Album
 3. Play music
 
