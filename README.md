@@ -15,6 +15,7 @@ Reference from: [Programmity](https://www.youtube.com/c/Programmity/videos)
 1. List / Sort songs
 2. Album
 3. Play music
+4. Notification (Coming Soon)
 
 ### Example
 ![songs](https://user-images.githubusercontent.com/25784574/87036114-e5e3b600-c21c-11ea-9606-73d6ee4f3672.gif)
