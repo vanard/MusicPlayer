@@ -8,20 +8,24 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.vanard.learnmusicplayer.R
 import com.vanard.learnmusicplayer.adapter.MusicAdapter
+import com.vanard.learnmusicplayer.databinding.FragmentSongsBinding
 import com.vanard.learnmusicplayer.ui.MainActivity.Companion.musicFile
 
-class SongsFragment : Fragment() {
+class SongsFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private val TAG = "SongsFragment"
+
+    private var _binding: FragmentSongsBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var musicAdapter: MusicAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        val view: View = inflater.inflate(R.layout.fragment_songs, container, false)
-        val rvMusic: RecyclerView = view.findViewById(R.id.rvMusic)
+        _binding = FragmentSongsBinding.inflate(inflater, container, false)
 
         setHasOptionsMenu(true)
 
@@ -29,39 +33,38 @@ class SongsFragment : Fragment() {
             musicFile
         )
 
-        rvMusic.apply {
+        binding.rvMusic.apply {
             layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
             setHasFixedSize(true)
             adapter = musicAdapter
         }
 
-        return view
-    }
-
-    override fun onResume() {
-//        musicAdapter.notifyDataSetChanged()
-        super.onResume()
+        return binding.root
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.search, menu)
         val searchAction = menu.findItem(R.id.action_search)
-        val searchView = SearchView(requireContext())
-        searchView.queryHint = "Search..."
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
-            }
+        val searchView = searchAction.actionView as? SearchView
+        searchView?.setOnQueryTextListener(this)
+        searchView?.queryHint = "Search..."
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                musicAdapter.filter.filter(newText)
-                return true
-            }
-
-        })
-        
-        searchAction.actionView = searchView
+//        searchAction.actionView = searchView
         super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        return false
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        musicAdapter.filter.filter(newText)
+        return true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 }
