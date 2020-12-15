@@ -1,6 +1,6 @@
 ## MusicPlayer
 Simple music player mobile app.  
-Reference from: [Programmity](https://www.youtube.com/c/Programmity/videos)
+Reference from: [Programmity](https://www.youtube.com/playlist?list=PLwQLA73lSe1RfjMzbRLoIkcIJBu25FnVJ)
 
 ## Built With
 - [Kotlin](https://kotlinlang.org/)
