@@ -12,25 +12,32 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.tabs.TabLayoutMediator.TabConfigurationStrategy
+import com.vanard.learnmusicplayer.Constants
+import com.vanard.learnmusicplayer.MainViewModel
 import com.vanard.learnmusicplayer.R
+import com.vanard.learnmusicplayer.adapter.ViewPagerAdapter
 import com.vanard.learnmusicplayer.databinding.ActivityMainBinding
 import com.vanard.learnmusicplayer.model.MusicFile
 import com.vanard.learnmusicplayer.ui.main.AlbumsFragment
 import com.vanard.learnmusicplayer.ui.main.SongsFragment
-import com.vanard.learnmusicplayer.ui.main.ViewPagerAdapter
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var mainViewModel: MainViewModel
+    private var sortBy = Constants.PREFERENCES_SORT_BY_NAME
 
     private val TAB_TITLES = arrayOf(
         R.string.tab_text_1,
         R.string.tab_text_2
     )
 
+    private val TAG = "MainActivity"
     private val WRITE_REQUEST_CODE = 101
 
     companion object {
@@ -44,11 +51,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 //        val sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
 //        viewPager.adapter = sectionsPagerAdapter
 //        val tabs: TabLayout = findViewById(R.id.tabs)
 //        tabs.setupWithViewPager(viewPager)
-
+        
         permission()
         setupViewPager()
     }
@@ -85,7 +93,12 @@ class MainActivity : AppCompatActivity() {
         if (permission != PackageManager.PERMISSION_GRANTED) {
             makeRequest()
         } else {
-            musicFile = getAllAudio(this)
+            mainViewModel.readSelectedSortBy.observe(this, {
+                sortBy = it
+                musicFile = getAllAudio(this, sortBy)
+            })
+//            musicFile = getAllAudio(this, sortBy)
+
         }
     }
 
@@ -106,7 +119,8 @@ class MainActivity : AppCompatActivity() {
             WRITE_REQUEST_CODE -> {
 
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    musicFile = getAllAudio(this)
+
+                    musicFile = getAllAudio(this, sortBy)
 
                 } else {
                     makeRequest()
@@ -116,8 +130,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getAllAudio(context: Context): ArrayList<MusicFile> {
+    private fun getAllAudio(context: Context, sortBy: String): ArrayList<MusicFile> {
         val tempAudioList: ArrayList<MusicFile> = ArrayList()
+        val mOrder = when(sortBy) {
+            Constants.PREFERENCES_SORT_BY_NAME -> MediaStore.MediaColumns.DISPLAY_NAME + " ASC"
+            Constants.PREFERENCES_SORT_BY_DATE -> MediaStore.MediaColumns.DATE_ADDED + " ASC"
+            Constants.PREFERENCES_SORT_BY_SIZE -> MediaStore.MediaColumns.SIZE + " DESC"
+            else -> MediaStore.MediaColumns.DISPLAY_NAME + " ASC"
+        }
+
         val uri: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         val projection = arrayOf(
             MediaStore.Audio.Media.ALBUM,
@@ -127,8 +148,10 @@ class MainActivity : AppCompatActivity() {
             MediaStore.Audio.Media.ARTIST,
             MediaStore.Audio.Media._ID
         )
-        Log.d("MainActivity", "getAllAudio: $uri")
-        val cursor: Cursor? = context.contentResolver.query(uri, projection, null, null, null)
+        Log.d(TAG, "getAllAudio: $uri")
+        val cursor: Cursor? = context.contentResolver.query(
+            uri, projection, null, null, mOrder
+        )
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 val album = cursor.getString(0)

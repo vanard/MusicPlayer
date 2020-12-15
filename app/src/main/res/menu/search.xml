@@ -3,8 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:title="@string/search_text"
-        android:id="@+id/action_search"
+        android:id="@+id/search_menu"
         android:icon="@drawable/ic_baseline_search_24"
         app:showAsAction="ifRoom"
         app:actionViewClass="androidx.appcompat.widget.SearchView"/>
+    <item
+        android:id="@+id/sort_menu"
+        android:title="@string/sort_by_text"
+        app:showAsAction="never">
+        <menu>
+            <item android:id="@+id/sort_name"
+                android:title="@string/name_text"
+                app:showAsAction="never" />
+            <item android:id="@+id/sort_date"
+                android:title="@string/date_text"
+                app:showAsAction="never" />
+            <item android:id="@+id/sort_size"
+                android:title="@string/size_text"
+                app:showAsAction="never" />
+        </menu>
+    </item>
 </menu>

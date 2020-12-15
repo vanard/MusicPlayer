@@ -60,7 +60,7 @@ class MusicAdapter (private val mFiles: ArrayList<MusicFile>,
             popupMenu.menuInflater.inflate(R.menu.pop_music_file, popupMenu.menu)
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
-                    R.id.pop_delete -> deleteFile(position, v)
+                    R.id.delete_popmenu -> deleteFile(position, v)
                     else -> false
                 }
             }
@@ -112,6 +112,11 @@ class MusicAdapter (private val mFiles: ArrayList<MusicFile>,
         }
     }
 
+    fun setNewData(newSongs: ArrayList<MusicFile>) {
+        mSongs = newSongs
+        notifyDataSetChanged()
+    }
+
     override fun getFilter(): Filter = fileFilter()
 
     private fun fileFilter() : Filter = object : Filter() {
@@ -141,5 +146,8 @@ class MusicAdapter (private val mFiles: ArrayList<MusicFile>,
         }
 
     }
+
+
+
 
 }

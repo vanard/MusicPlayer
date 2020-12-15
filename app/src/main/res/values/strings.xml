@@ -9,4 +9,9 @@
     <string name="base_duration_played">0:00</string>
     <string name="unknown_text">Unknown</string>
     <string name="search_text">Search</string>
+    <string name="delete_text">Delete</string>
+    <string name="sort_by_text">Sort by</string>
+    <string name="name_text">Name</string>
+    <string name="date_text">Date</string>
+    <string name="size_text">Size</string>
 </resources>

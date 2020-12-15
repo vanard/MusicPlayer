@@ -1,4 +1,4 @@
-package com.vanard.learnmusicplayer.ui.main
+package com.vanard.learnmusicplayer.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

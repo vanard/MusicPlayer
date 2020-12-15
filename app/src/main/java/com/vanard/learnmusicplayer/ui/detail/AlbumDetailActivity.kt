@@ -1,6 +1,7 @@
 package com.vanard.learnmusicplayer.ui.detail
 
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,6 +29,7 @@ class AlbumDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAlbumDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         albumSongs.clear()
         albumName = intent.getStringExtra("albumName")
@@ -59,5 +61,12 @@ class AlbumDetailActivity : AppCompatActivity() {
             setHasFixedSize(true)
             adapter = musicAdapter
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            finish()
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
