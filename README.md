@@ -4,6 +4,8 @@ Reference from: [Programmity](https://www.youtube.com/c/Programmity/videos)
 
 ## Built With
 - [Kotlin](https://kotlinlang.org/)
+- [Flow](https://kotlinlang.org/docs/reference/coroutines/flow.html)
+- [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel)
 - [View Binding](https://developer.android.com/topic/libraries/view-binding)
 - [Material Components for Android](https://github.com/material-components/material-components-android)
 
