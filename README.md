@@ -4,6 +4,7 @@ Reference from: [Programmity](https://www.youtube.com/c/Programmity/videos)
 
 ## Built With
 - [Kotlin](https://kotlinlang.org/)
+- [Dagger-Hilt](https://developer.android.com/training/dependency-injection/hilt-android)
 - [Flow](https://kotlinlang.org/docs/reference/coroutines/flow.html)
 - [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel)
 - [View Binding](https://developer.android.com/topic/libraries/view-binding)
