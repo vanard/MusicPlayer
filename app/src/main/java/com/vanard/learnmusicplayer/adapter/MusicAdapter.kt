@@ -80,7 +80,7 @@ class MusicAdapter (private val mFiles: ArrayList<MusicFile>,
     private fun deleteFile(position: Int, v: View): Boolean {
         val contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
             mSongs[position].id!!.toLong())
-        val file = File(mSongs[position].path)
+        val file = File(mSongs[position].path!!)
         val deleted = file.delete()
         if (deleted) {
             mContext.contentResolver.delete(contentUri, null, null)

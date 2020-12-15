@@ -15,14 +15,16 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.tabs.TabLayoutMediator.TabConfigurationStrategy
 import com.vanard.learnmusicplayer.R
+import com.vanard.learnmusicplayer.databinding.ActivityMainBinding
 import com.vanard.learnmusicplayer.model.MusicFile
 import com.vanard.learnmusicplayer.ui.main.AlbumsFragment
 import com.vanard.learnmusicplayer.ui.main.SongsFragment
 import com.vanard.learnmusicplayer.ui.main.ViewPagerAdapter
-import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
 
     private val TAB_TITLES = arrayOf(
         R.string.tab_text_1,
@@ -40,7 +42,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 //        val sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
 //        viewPager.adapter = sectionsPagerAdapter
 //        val tabs: TabLayout = findViewById(R.id.tabs)
@@ -67,9 +70,9 @@ class MainActivity : AppCompatActivity() {
             lifecycle
         )
 
-        viewPager.adapter = adapter
+        binding.viewPager.adapter = adapter
 
-        TabLayoutMediator(tabs, viewPager,
+        TabLayoutMediator(binding.tabs, binding.viewPager,
             TabConfigurationStrategy { tab, position ->
                 tab.text = this.resources.getString(TAB_TITLES[position])
             }).attach()
@@ -124,6 +127,7 @@ class MainActivity : AppCompatActivity() {
             MediaStore.Audio.Media.ARTIST,
             MediaStore.Audio.Media._ID
         )
+        Log.d("MainActivity", "getAllAudio: $uri")
         val cursor: Cursor? = context.contentResolver.query(uri, projection, null, null, null)
         if (cursor != null) {
             while (cursor.moveToNext()) {

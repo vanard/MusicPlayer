@@ -8,6 +8,7 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
@@ -17,22 +18,24 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.vanard.learnmusicplayer.R
+import com.vanard.learnmusicplayer.databinding.ActivityPlayerBinding
 import com.vanard.learnmusicplayer.model.MusicFile
 import com.vanard.learnmusicplayer.ui.MainActivity.Companion.musicFile
 import com.vanard.learnmusicplayer.ui.MainActivity.Companion.repeatBoolean
 import com.vanard.learnmusicplayer.ui.MainActivity.Companion.repeatOneBoolean
 import com.vanard.learnmusicplayer.ui.MainActivity.Companion.shuffleBoolean
 import com.vanard.learnmusicplayer.ui.detail.AlbumDetailActivity.Companion.albumSongs
-import kotlinx.android.synthetic.main.activity_player.*
 import java.util.*
 
 
 class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
 
+    private lateinit var binding: ActivityPlayerBinding
+
     private val TAG = "PlayerActivity"
     
     private var pos = -1
-    private var musicHandler = Handler()
+    private var musicHandler = Handler(Looper.getMainLooper())
     private lateinit var playThread : Thread
     private lateinit var nextThread : Thread
     private lateinit var prevThread : Thread
@@ -45,7 +48,9 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_player)
+        binding = ActivityPlayerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         getIntentData()
         setupView()
 
@@ -53,8 +58,8 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
             override fun run() {
                 if (mediaPlayer != null) {
                     val mCurrentPos = mediaPlayer!!.currentPosition / 1000
-                    seekBar.progress = mCurrentPos
-                    durationPlayed.text = formattedTime(mCurrentPos)
+                    binding.seekBar.progress = mCurrentPos
+                    binding.durationPlayed.text = formattedTime(mCurrentPos)
                 }
                 musicHandler.postDelayed(this, 1000)
             }
@@ -63,11 +68,11 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
     }
 
     private fun setupView() {
-        backBtn.setOnClickListener {
+        binding.backBtn.setOnClickListener {
             onBackPressed()
         }
 
-        seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+        binding.seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (mediaPlayer != null && fromUser) {
                     mediaPlayer!!.seekTo(progress * 1000)
@@ -83,27 +88,27 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
             }
 
         })
-        shuffleBtn.setOnClickListener {
+        binding.shuffleBtn.setOnClickListener {
             if (shuffleBoolean) {
                 shuffleBoolean = false
-                shuffleBtn.setImageResource(R.drawable.ic_baseline_shuffle_24)
+                binding.shuffleBtn.setImageResource(R.drawable.ic_baseline_shuffle_24)
             } else {
                 shuffleBoolean = true
-                shuffleBtn.setImageResource(R.drawable.ic_baseline_shuffle_on_24)
+                binding.shuffleBtn.setImageResource(R.drawable.ic_baseline_shuffle_on_24)
             }
         }
-        repeatBtn.setOnClickListener {
+        binding.repeatBtn.setOnClickListener {
             if (repeatBoolean && repeatOneBoolean) {
                 repeatBoolean = false
                 repeatOneBoolean = false
-                repeatBtn.setImageResource(R.drawable.ic_baseline_repeat_24)
+                binding.repeatBtn.setImageResource(R.drawable.ic_baseline_repeat_24)
             } else if (repeatBoolean && !repeatOneBoolean) {
                 repeatOneBoolean = true
-                repeatBtn.setImageResource(R.drawable.ic_baseline_repeat_on_one_24)
+                binding.repeatBtn.setImageResource(R.drawable.ic_baseline_repeat_on_one_24)
             }
             else {
                 repeatBoolean = true
-                repeatBtn.setImageResource(R.drawable.ic_baseline_repeat_on_24)
+                binding.repeatBtn.setImageResource(R.drawable.ic_baseline_repeat_on_24)
             }
         }
     }
@@ -119,7 +124,7 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
         prevThread = object : Thread() {
             override fun run() {
                 super.run()
-                prevBtn.setOnClickListener {
+                binding.prevBtn.setOnClickListener {
                     prevBtnClicked()
                 }
             }
@@ -131,7 +136,7 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
         nextThread = object : Thread() {
             override fun run() {
                 super.run()
-                nextBtn.setOnClickListener {
+                binding.nextBtn.setOnClickListener {
                     nextBtnClicked()
                 }
             }
@@ -143,7 +148,7 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
         playThread = object : Thread() {
             override fun run() {
                 super.run()
-                playPauseBtn.setOnClickListener {
+                binding.playPauseBtn.setOnClickListener {
                     playPauseBtnClicked()
                 }
             }
@@ -156,11 +161,11 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
 
         if (mediaPlayer!!.isPlaying) {
             preparePrevSong()
-            playPauseBtn.setBackgroundResource(R.drawable.ic_baseline_pause_24)
+            binding.playPauseBtn.setBackgroundResource(R.drawable.ic_baseline_pause_24)
             mediaPlayer!!.start()
         } else {
             preparePrevSong()
-            playPauseBtn.setBackgroundResource(R.drawable.ic_baseline_play_arrow_24)
+            binding.playPauseBtn.setBackgroundResource(R.drawable.ic_baseline_play_arrow_24)
         }
     }
 
@@ -169,11 +174,11 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
 
         if (mediaPlayer!!.isPlaying) {
             prepareNextSong()
-            playPauseBtn.setBackgroundResource(R.drawable.ic_baseline_pause_24)
+            binding.playPauseBtn.setBackgroundResource(R.drawable.ic_baseline_pause_24)
             mediaPlayer!!.start()
         } else {
             prepareNextSong()
-            playPauseBtn.setBackgroundResource(R.drawable.ic_baseline_play_arrow_24)
+            binding.playPauseBtn.setBackgroundResource(R.drawable.ic_baseline_play_arrow_24)
         }
     }
 
@@ -182,7 +187,7 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
         if (mediaPlayer == null) return
 
         if (mediaPlayer!!.isPlaying) {
-            playPauseBtn.setImageResource(R.drawable.ic_baseline_play_arrow_24)
+            binding.playPauseBtn.setImageResource(R.drawable.ic_baseline_play_arrow_24)
             mediaPlayer!!.pause()
 //            seekBar.max = mediaPlayer!!.duration / 1000
 //            runOnUiThread(object : Runnable {
@@ -195,7 +200,7 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
 //                }
 //            })
         } else {
-            playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
+            binding.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
             mediaPlayer!!.start()
         }
     }
@@ -214,9 +219,9 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
             uri
         )
         metadataR(uri, 2)
-        songName.text = listSongs!![pos].title
-        artistName.text = listSongs!![pos].artist
-        seekBar.max = mediaPlayer!!.duration / 1000
+        binding.songName.text = listSongs!![pos].title
+        binding.artistName.text = listSongs!![pos].artist
+        binding.seekBar.max = mediaPlayer!!.duration / 1000
         mediaPlayer!!.setOnCompletionListener(this)
     }
 
@@ -235,9 +240,9 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
             uri
         )
         metadataR(uri, 1)
-        songName.text = listSongs!![pos].title
-        artistName.text = listSongs!![pos].artist
-        seekBar.max = mediaPlayer!!.duration / 1000
+        binding.songName.text = listSongs!![pos].title
+        binding.artistName.text = listSongs!![pos].artist
+        binding.seekBar.max = mediaPlayer!!.duration / 1000
         mediaPlayer!!.setOnCompletionListener(this)
     }
 
@@ -253,12 +258,12 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
     }
 
     private fun formattedTime(mCurrentPos : Int) : String {
-        var totalOut = ""
-        var totalNew = ""
+//        var totalOut = ""
+//        var totalNew = ""
         val seconds : String = (mCurrentPos % 60).toString()
         val minutes : String = (mCurrentPos / 60).toString()
-        totalOut = "$minutes:$seconds"
-        totalNew = "$minutes:0$seconds"
+        val totalOut = "$minutes:$seconds"
+        val totalNew = "$minutes:0$seconds"
 
         return if (seconds.length == 1) totalNew
         else totalOut
@@ -271,11 +276,11 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
             else musicFile
 
         if (listSongs != null) {
-            playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
+            binding.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
             uri = Uri.parse(
                 listSongs!![pos].path) // fromFile
-            songName.text = listSongs!![pos].title
-            artistName.text = listSongs!![pos].artist
+            binding.songName.text = listSongs!![pos].title
+            binding.artistName.text = listSongs!![pos].artist
         } else {
             Toast.makeText(this, "Something wrong", Toast.LENGTH_SHORT).show()
             finish()
@@ -297,29 +302,29 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
 
         mediaPlayer!!.setOnCompletionListener(this)
         metadataR(uri, 0)
-        seekBar.max = mediaPlayer!!.duration / 1000
+        binding.seekBar.max = mediaPlayer!!.duration / 1000
     }
 
     private fun metadataR(uri: Uri, code: Int) {
         val retriever = MediaMetadataRetriever()
         retriever.setDataSource(uri.toString())
         val mDurationTotal = Integer.parseInt(listSongs!![pos].duration!!) / 1000
-        durationTotal.text = formattedTime(mDurationTotal)
+        binding.durationTotal.text = formattedTime(mDurationTotal)
         val art : ByteArray? = retriever.embeddedPicture
-        var bitmap : Bitmap? = null
+        val bitmap: Bitmap?
         if (art != null) {
 //            Glide.with(this).asBitmap().load(art).into(albumArtPlay)
 
             bitmap = BitmapFactory.decodeByteArray(art, 0, art.size)
             when (code) {
-                0 -> imageAnimation(this, albumArtPlay, bitmap)
-                1 -> imageNextAnimation(this, albumArtPlay, bitmap)
-                2 -> imagePrevAnimation(this, albumArtPlay, bitmap)
+                0 -> imageAnimation(this, binding.albumArtPlay, bitmap)
+                1 -> imageNextAnimation(this, binding.albumArtPlay, bitmap)
+                2 -> imagePrevAnimation(this, binding.albumArtPlay, bitmap)
                 else -> return
             }
 
         } else {
-            Glide.with(this).asBitmap().load(R.drawable.ic_music_note).into(albumArtPlay)
+            Glide.with(this).asBitmap().load(R.drawable.ic_music_note).into(binding.albumArtPlay)
 
 //            bitmap = BitmapFactory.decodeByteArray(art, 0, art.size)
 //            imageAnimation(this, albumArtPlay, bitmap)

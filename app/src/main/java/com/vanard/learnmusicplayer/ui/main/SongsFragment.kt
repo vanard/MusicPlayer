@@ -46,7 +46,7 @@ class SongsFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.search, menu)
         val searchAction = menu.findItem(R.id.action_search)
-        val searchView = SearchView(context)
+        val searchView = SearchView(requireContext())
         searchView.queryHint = "Search..."
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {

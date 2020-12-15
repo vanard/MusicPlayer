@@ -7,12 +7,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.vanard.learnmusicplayer.R
 import com.vanard.learnmusicplayer.adapter.MusicAdapter
+import com.vanard.learnmusicplayer.databinding.ActivityAlbumDetailBinding
 import com.vanard.learnmusicplayer.model.MusicFile
 import com.vanard.learnmusicplayer.ui.MainActivity.Companion.musicFile
-import kotlinx.android.synthetic.main.activity_album_detail.*
 import java.util.*
 
 class AlbumDetailActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityAlbumDetailBinding
 
     private var albumName: String? = ""
     private var count = 0
@@ -24,7 +26,8 @@ class AlbumDetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_album_detail)
+        binding = ActivityAlbumDetailBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         albumSongs.clear()
         albumName = intent.getStringExtra("albumName")
@@ -35,15 +38,15 @@ class AlbumDetailActivity : AppCompatActivity() {
             }
         }
 
-        album_name.text = albumName
+        binding.albumName.text = albumName
         val img : ByteArray? = MusicAdapter.getAlbumArt(albumSongs[0].path)
         if (img != null) {
-            Glide.with(this).asBitmap().load(img).into(album_image)
+            Glide.with(this).asBitmap().load(img).into(binding.albumImage)
 
         } else {
             Glide.with(this).asBitmap()
                 .load(R.drawable.ic_music_note)
-                .into(album_image)
+                .into(binding.albumImage)
         }
 
         musicAdapter = MusicAdapter(
@@ -51,7 +54,7 @@ class AlbumDetailActivity : AppCompatActivity() {
             "albumDetail"
         )
 
-        rvMusicAlbum.apply {
+        binding.rvMusicAlbum.apply {
             layoutManager = LinearLayoutManager(this@AlbumDetailActivity, RecyclerView.VERTICAL, false)
             setHasFixedSize(true)
             adapter = musicAdapter
