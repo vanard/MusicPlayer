@@ -1,6 +1,9 @@
 package com.vanard.learnmusicplayer.ui.detail
 
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
@@ -8,6 +11,7 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.IBinder
 import android.os.Looper
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -20,6 +24,8 @@ import com.bumptech.glide.Glide
 import com.vanard.learnmusicplayer.R
 import com.vanard.learnmusicplayer.databinding.ActivityPlayerBinding
 import com.vanard.learnmusicplayer.model.MusicFile
+import com.vanard.learnmusicplayer.service.MusicService
+import com.vanard.learnmusicplayer.ui.ActionPlaying
 import com.vanard.learnmusicplayer.ui.MainActivity.Companion.musicFile
 import com.vanard.learnmusicplayer.ui.MainActivity.Companion.repeatBoolean
 import com.vanard.learnmusicplayer.ui.MainActivity.Companion.repeatOneBoolean
@@ -28,7 +34,8 @@ import com.vanard.learnmusicplayer.ui.detail.AlbumDetailActivity.Companion.album
 import java.util.*
 
 
-class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
+class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
+    ActionPlaying, ServiceConnection{
 
     private lateinit var binding: ActivityPlayerBinding
 
@@ -39,6 +46,7 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
     private lateinit var playThread : Thread
     private lateinit var nextThread : Thread
     private lateinit var prevThread : Thread
+    private var musicService: MusicService? = null
 
     companion object {
         var listSongs : ArrayList<MusicFile>? = arrayListOf()
@@ -114,10 +122,18 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
     }
 
     override fun onResume() {
+        val intent = Intent(this, MusicService::class.java)
+        bindService(intent, this, BIND_AUTO_CREATE)
+
         playThreadBtn()
         nextThreadBtn()
         prevThreadBtn()
         super.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unbindService(this)
     }
 
     private fun prevThreadBtn() {
@@ -183,7 +199,6 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
     }
 
     private fun playPauseBtnClicked() {
-//        Log.d(TAG, "playPauseBtnClicked: true")
         if (mediaPlayer == null) return
 
         if (mediaPlayer!!.isPlaying) {
@@ -411,6 +426,28 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener {
             mediaPlayer!!.start()
             mediaPlayer!!.setOnCompletionListener(this)
         }
+    }
+
+    override fun btnPlayPauseClicked() {
+        playPauseBtnClicked()
+    }
+
+    override fun btnPrevClicked() {
+        prevBtnClicked()
+    }
+
+    override fun btnNextClicked() {
+        nextBtnClicked()
+    }
+
+    override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
+        val myBinder: MusicService.MyBinder = p1 as MusicService.MyBinder
+        musicService = myBinder.service
+        Toast.makeText(this, "Connected $musicService", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onServiceDisconnected(p0: ComponentName?) {
+        musicService = null
     }
 
 }

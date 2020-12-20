@@ -1,10 +1,11 @@
-package com.vanard.learnmusicplayer
+package com.vanard.learnmusicplayer.viewmodel
 
 import android.app.Application
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.vanard.learnmusicplayer.DataStoreRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

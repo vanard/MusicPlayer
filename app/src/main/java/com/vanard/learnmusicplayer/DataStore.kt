@@ -7,9 +7,9 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.preferencesKey
 import androidx.datastore.preferences.createDataStore
-import com.vanard.learnmusicplayer.Constants.Companion.PREFERENCES_NAME
-import com.vanard.learnmusicplayer.Constants.Companion.PREFERENCES_SORT_BY
-import com.vanard.learnmusicplayer.Constants.Companion.PREFERENCES_SORT_BY_NAME
+import com.vanard.learnmusicplayer.util.Constants.Companion.PREFERENCES_NAME
+import com.vanard.learnmusicplayer.util.Constants.Companion.PREFERENCES_SORT_BY
+import com.vanard.learnmusicplayer.util.Constants.Companion.PREFERENCES_SORT_BY_NAME
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.flow.Flow

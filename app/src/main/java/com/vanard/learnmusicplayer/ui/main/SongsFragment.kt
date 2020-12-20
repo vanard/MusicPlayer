@@ -7,14 +7,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.vanard.learnmusicplayer.Constants.Companion.PREFERENCES_SORT_BY_DATE
-import com.vanard.learnmusicplayer.Constants.Companion.PREFERENCES_SORT_BY_NAME
-import com.vanard.learnmusicplayer.Constants.Companion.PREFERENCES_SORT_BY_SIZE
-import com.vanard.learnmusicplayer.MainViewModel
 import com.vanard.learnmusicplayer.R
 import com.vanard.learnmusicplayer.adapter.MusicAdapter
 import com.vanard.learnmusicplayer.databinding.FragmentSongsBinding
 import com.vanard.learnmusicplayer.ui.MainActivity.Companion.musicFile
+import com.vanard.learnmusicplayer.util.Constants.Companion.PREFERENCES_SORT_BY_DATE
+import com.vanard.learnmusicplayer.util.Constants.Companion.PREFERENCES_SORT_BY_NAME
+import com.vanard.learnmusicplayer.util.Constants.Companion.PREFERENCES_SORT_BY_SIZE
+import com.vanard.learnmusicplayer.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

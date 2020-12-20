@@ -15,14 +15,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.tabs.TabLayoutMediator.TabConfigurationStrategy
-import com.vanard.learnmusicplayer.Constants
-import com.vanard.learnmusicplayer.MainViewModel
 import com.vanard.learnmusicplayer.R
 import com.vanard.learnmusicplayer.adapter.ViewPagerAdapter
 import com.vanard.learnmusicplayer.databinding.ActivityMainBinding
 import com.vanard.learnmusicplayer.model.MusicFile
 import com.vanard.learnmusicplayer.ui.main.AlbumsFragment
 import com.vanard.learnmusicplayer.ui.main.SongsFragment
+import com.vanard.learnmusicplayer.util.Constants
+import com.vanard.learnmusicplayer.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
