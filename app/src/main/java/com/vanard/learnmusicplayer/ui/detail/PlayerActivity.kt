@@ -7,7 +7,6 @@ import android.content.ServiceConnection
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
-import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -34,7 +33,7 @@ import com.vanard.learnmusicplayer.ui.detail.AlbumDetailActivity.Companion.album
 import java.util.*
 
 
-class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
+class PlayerActivity : AppCompatActivity(),
     ActionPlaying, ServiceConnection{
 
     private lateinit var binding: ActivityPlayerBinding
@@ -51,7 +50,7 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
     companion object {
         var listSongs : ArrayList<MusicFile>? = arrayListOf()
         lateinit var uri : Uri
-        var mediaPlayer : MediaPlayer? = null
+//        var mediaPlayer : MediaPlayer? = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,8 +63,8 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
 
         runOnUiThread(object : Runnable {
             override fun run() {
-                if (mediaPlayer != null) {
-                    val mCurrentPos = mediaPlayer!!.currentPosition / 1000
+                if (musicService != null) {
+                    val mCurrentPos = musicService!!.getCurrentPosition() / 1000
                     binding.seekBar.progress = mCurrentPos
                     binding.durationPlayed.text = formattedTime(mCurrentPos)
                 }
@@ -82,8 +81,8 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
 
         binding.seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                if (mediaPlayer != null && fromUser) {
-                    mediaPlayer!!.seekTo(progress * 1000)
+                if (musicService != null && fromUser) {
+                    musicService!!.seekTo(progress * 1000)
                 }
             }
 
@@ -173,12 +172,12 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
     }
 
     private fun prevBtnClicked() {
-        if (mediaPlayer == null) return
+        if (musicService == null) return
 
-        if (mediaPlayer!!.isPlaying) {
+        if (musicService!!.isPlaying()) {
             preparePrevSong()
             binding.playPauseBtn.setBackgroundResource(R.drawable.ic_baseline_pause_24)
-            mediaPlayer!!.start()
+            musicService!!.start()
         } else {
             preparePrevSong()
             binding.playPauseBtn.setBackgroundResource(R.drawable.ic_baseline_play_arrow_24)
@@ -186,12 +185,12 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
     }
 
     private fun nextBtnClicked() {
-        if (mediaPlayer == null) return
+        if (musicService == null) return
 
-        if (mediaPlayer!!.isPlaying) {
+        if (musicService!!.isPlaying()) {
             prepareNextSong()
             binding.playPauseBtn.setBackgroundResource(R.drawable.ic_baseline_pause_24)
-            mediaPlayer!!.start()
+            musicService!!.start()
         } else {
             prepareNextSong()
             binding.playPauseBtn.setBackgroundResource(R.drawable.ic_baseline_play_arrow_24)
@@ -199,11 +198,11 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
     }
 
     private fun playPauseBtnClicked() {
-        if (mediaPlayer == null) return
+        if (musicService == null) return
 
-        if (mediaPlayer!!.isPlaying) {
+        if (musicService!!.isPlaying()) {
             binding.playPauseBtn.setImageResource(R.drawable.ic_baseline_play_arrow_24)
-            mediaPlayer!!.pause()
+            musicService!!.pause()
 //            seekBar.max = mediaPlayer!!.duration / 1000
 //            runOnUiThread(object : Runnable {
 //                override fun run() {
@@ -216,7 +215,7 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
 //            })
         } else {
             binding.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
-            mediaPlayer!!.start()
+            musicService!!.start()
         }
     }
 
@@ -230,14 +229,9 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
         }
         uri = Uri.parse(
             listSongs!![pos].path) // fromFile
-        mediaPlayer = MediaPlayer.create(applicationContext,
-            uri
-        )
+        musicService!!.createMediaPlayer(pos)
         metadataR(uri, 2)
-        binding.songName.text = listSongs!![pos].title
-        binding.artistName.text = listSongs!![pos].artist
-        binding.seekBar.max = mediaPlayer!!.duration / 1000
-        mediaPlayer!!.setOnCompletionListener(this)
+        setDisplayMusic()
     }
 
     private fun prepareNextSong() {
@@ -251,14 +245,16 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
         // else
         uri = Uri.parse(
             listSongs!![pos].path) // fromFile
-        mediaPlayer = MediaPlayer.create(applicationContext,
-            uri
-        )
+        musicService!!.createMediaPlayer(pos)
         metadataR(uri, 1)
+        setDisplayMusic()
+    }
+
+    private fun setDisplayMusic() {
         binding.songName.text = listSongs!![pos].title
         binding.artistName.text = listSongs!![pos].artist
-        binding.seekBar.max = mediaPlayer!!.duration / 1000
-        mediaPlayer!!.setOnCompletionListener(this)
+        binding.seekBar.max = musicService!!.getDuration() / 1000
+        musicService!!.onCompleted()
     }
 
     private fun getRandom(i: Int): Int {
@@ -267,9 +263,9 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
     }
 
     private fun stopMp() {
-        mediaPlayer!!.stop()
-        mediaPlayer!!.reset()
-        mediaPlayer!!.release()
+        musicService!!.stop()
+        musicService!!.reset()
+        musicService!!.release()
     }
 
     private fun formattedTime(mCurrentPos : Int) : String {
@@ -302,22 +298,17 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
             return
         }
 
-        if (mediaPlayer != null) {
+        if (musicService != null) {
             stopMp()
-            mediaPlayer = MediaPlayer.create(applicationContext,
-                uri
-            )
-            mediaPlayer!!.start()
+            musicService!!.createMediaPlayer(pos)
+            musicService!!.start()
         } else {
-            mediaPlayer = MediaPlayer.create(applicationContext,
-                uri
-            )
-            mediaPlayer!!.start()
+            musicService!!.createMediaPlayer(pos)
+            musicService!!.start()
         }
 
-        mediaPlayer!!.setOnCompletionListener(this)
-        metadataR(uri, 0)
-        binding.seekBar.max = mediaPlayer!!.duration / 1000
+        musicService!!.onCompleted()
+
     }
 
     private fun metadataR(uri: Uri, code: Int) {
@@ -417,17 +408,6 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
         imageView.startAnimation(animOut)
     }
 
-    override fun onCompletion(mp: MediaPlayer?) {
-        nextBtnClicked()
-        if (mediaPlayer != null) {
-            mediaPlayer = MediaPlayer.create(applicationContext,
-                uri
-            )
-            mediaPlayer!!.start()
-            mediaPlayer!!.setOnCompletionListener(this)
-        }
-    }
-
     override fun btnPlayPauseClicked() {
         playPauseBtnClicked()
     }
@@ -443,6 +423,10 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
     override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
         val myBinder: MusicService.MyBinder = p1 as MusicService.MyBinder
         musicService = myBinder.service
+
+        metadataR(uri, 0)
+        binding.seekBar.max = musicService!!.getDuration() / 1000
+
         Toast.makeText(this, "Connected $musicService", Toast.LENGTH_SHORT).show()
     }
 

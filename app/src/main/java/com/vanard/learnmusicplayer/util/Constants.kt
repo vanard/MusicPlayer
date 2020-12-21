@@ -17,6 +17,9 @@ class Constants {
         const val ACTION_NEXT = "action_next"
         const val ACTION_PLAY = "action_play"
 
+        // Intent
+        const val SERVICE_POSITION = "servicePosition"
+
 
     }
 
